@@ -1,0 +1,28 @@
+server:
+  port: 8080
+  # ? ??????? ??? ? ??
+  servlet:
+    encoding:
+      charset: UTF-8
+      force: true
+    context-path: /
+  # ?? ??? ????? ???? ?? Whitelabel Error Page ?? OFF
+  error:
+    whitelabel:
+      enabled: false
+
+spring:
+  profiles:
+    active: local
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 100MB
+  jpa:
+    database: mysql
+    database-platform: org.hibernate.dialect.MariaDBDialect
+    generate-ddl: true
+    properties:
+      hibernate:
+        default_batch_fetch_size: 500 # 1:N ??? ?? ? ?? ???
+    open-in-view: false # ??? ????? ?? ??? ???? ??? ??
