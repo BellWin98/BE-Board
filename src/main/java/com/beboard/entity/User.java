@@ -26,14 +26,33 @@ public class User extends BaseTimeEntity {
     @Column(columnDefinition = "VARCHAR(50)", nullable = false)
     private String username;
 
+    @Column(nullable = false)
+    private boolean active = true;
+
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Role role;
 
     @Builder
-    public User(String email, String password, String username) {
+    public User(String email, String password, String username, Role role) {
         this.email = email;
         this.password = password;
         this.username = username;
-        this.role = Role.ROLE_USER;
+        this.role = role != null ? role : Role.ROLE_USER;
+    }
+
+    // 비밀번호 업데이트
+    public void updatePassword(String encodedPassword) {
+        this.password = encodedPassword;
+    }
+
+    // 계정 활성화/비활성화
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    // 관리자 권한 부여/제거
+    public void setRole(Role role) {
+        this.role = role;
     }
 }

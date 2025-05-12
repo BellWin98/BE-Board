@@ -14,5 +14,5 @@ spring:
         default_batch_fetch_size: 500 # 1:N 컬렉션 조회 시 성능 최적화
         highlight_sql: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     show-sql: true
