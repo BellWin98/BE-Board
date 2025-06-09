@@ -25,25 +25,29 @@ public class User extends BaseTimeEntity implements UserDetails {
     private String email;
 
     @Column(nullable = false, length = 100)
-    private String username;
+    private String nickname;
 
     @Column(nullable = false)
     private String password;
 
     private String profileImage;
 
+    // 관리자 권한 부여/제거
+    @Setter
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
 
+    // 계정 활성화/비활성화
+    @Setter
     @Column(nullable = false)
     private boolean active = true;
 
     // 생성자: 사용자 생성 시 필수 정보 초기화
     @Builder
-    public User(String email, String username, String password, Role role) {
+    public User(String email, String nickname, String password, Role role) {
         this.email = email;
-        this.username = username;
+        this.nickname = nickname;
         this.password = password;
         this.role = role != null ? role : Role.USER;
     }
@@ -51,7 +55,7 @@ public class User extends BaseTimeEntity implements UserDetails {
     // 프로필 정보 업데이트
     public void updateProfile(String username, String profileImage) {
         if (username != null && !username.isBlank()) {
-            this.username = username;
+            this.nickname = username;
         }
         this.profileImage = profileImage;
     }
@@ -59,16 +63,6 @@ public class User extends BaseTimeEntity implements UserDetails {
     // 비밀번호 업데이트
     public void updatePassword(String encodedPassword) {
         this.password = encodedPassword;
-    }
-
-    // 계정 활성화/비활성화
-    public void setActive(boolean active) {
-        this.active = active;
-    }
-
-    // 관리자 권한 부여/제거
-    public void setRole(Role role) {
-        this.role = role;
     }
 
     // --- UserDetails 구현 메서드 ---
@@ -82,11 +76,6 @@ public class User extends BaseTimeEntity implements UserDetails {
     public String getUsername() {
         // UserDetails에서는 username이 식별자이므로 email 반환
         return email;
-    }
-
-    // 실제 표시용 사용자 이름
-    public String getDisplayName() {
-        return username;
     }
 
     @Override

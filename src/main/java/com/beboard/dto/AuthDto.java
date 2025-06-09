@@ -13,7 +13,8 @@ public class AuthDto {
     @Getter
     @Builder
     public static class LoginResponse {
-        private String token;
+        private String accessToken;
+        private String refreshToken;
         private UserDto.Response user;
     }
 

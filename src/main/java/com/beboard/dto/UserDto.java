@@ -18,7 +18,7 @@ public class UserDto {
     public static class Response {
         private Long id;
         private String email;
-        private String userName;
+        private String nickname;
         private String profileImage;
         private Role role;
         private String createdAt;
@@ -28,7 +28,7 @@ public class UserDto {
             return Response.builder()
                     .id(user.getId())
                     .email(user.getEmail())
-                    .userName(user.getDisplayName())
+                    .nickname(user.getNickname())
                     .profileImage(user.getProfileImage())
                     .role(user.getRole())
                     .createdAt(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(user.getCreatedAt()))
@@ -45,7 +45,7 @@ public class UserDto {
 
         @NotBlank(message = "사용자명은 필수입니다")
         @Size(min = 2, max = 20, message = "사용자명은 2-20자 사이여야 합니다")
-        private String username;
+        private String nickname;
 
         @NotBlank(message = "비밀번호는 필수입니다")
         @Size(min = 8, max = 100, message = "비밀번호는 8자 이상이어야 합니다")
@@ -56,7 +56,7 @@ public class UserDto {
     public static class UpdateProfileRequest {
         private String email;
         private String password;
-        private String username;
+        private String nickname;
         private String profileImage;
     }
 

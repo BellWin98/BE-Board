@@ -22,10 +22,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     /**
      * 사용자명으로 사용자 조회
-     * @param username 조회할 사용자명
+     * @param nickname 조회할 사용자명
      * @return 사용자 Optional
      */
-    Optional<User> findByUsername(String username);
+    Optional<User> findByNickname(String nickname);
 
     /**
      * 이메일 존재 여부 확인
@@ -36,10 +36,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     /**
      * 사용자명 존재 여부 확인
-     * @param username 확인할 사용자명
+     * @param nickname 확인할 사용자명
      * @return 존재 여부
      */
-    boolean existsByUsername(String username);
+    boolean existsByNickname(String nickname);
 
     /**
      * 검색어로 사용자 검색
@@ -47,7 +47,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * @param pageable 페이징 정보
      * @return 검색된 사용자 페이지
      */
-    @Query("SELECT u FROM User u WHERE u.email LIKE %:searchTerm% OR u.username LIKE %:searchTerm%")
+    @Query("SELECT u FROM User u WHERE u.email LIKE %:searchTerm% OR u.nickname LIKE %:searchTerm%")
     Page<User> searchUsers(@Param("searchTerm") String searchTerm, Pageable pageable);
 
     /**

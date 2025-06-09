@@ -26,7 +26,6 @@ public class CategoryService {
      * 카테고리 목록 조회 (캐싱 적용)
      * @return 카테고리 목록
      */
-    @Cacheable("categories")
     public List<CategoryDto.Response> getAllCategories() {
         List<Category> categories = categoryRepository.findByActiveOrderByDisplayOrderAsc(true);
         return categories.stream()

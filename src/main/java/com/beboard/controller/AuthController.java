@@ -5,7 +5,6 @@ import com.beboard.dto.UserDto;
 import com.beboard.entity.User;
 import com.beboard.service.AuthService;
 import com.beboard.service.UserService;
-import com.beboard.util.JwtTokenProvider;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,21 +18,19 @@ public class AuthController {
 
     private final AuthService authService;
     private final UserService userService;
-    private final JwtTokenProvider jwtTokenProvider;
 
+    @PostMapping("/register")
+    public ResponseEntity<UserDto.Response> register(@Valid @RequestBody UserDto.RegisterRequest request) {
+        UserDto.Response registeredUser = authService.register(request);
+
+        return ResponseEntity.ok(registeredUser);
+    }
 
     @PostMapping("/login")
     public ResponseEntity<AuthDto.LoginResponse> login(@Valid @RequestBody AuthDto.LoginRequest request) {
         AuthDto.LoginResponse loginResponse = authService.login(request);
 
         return ResponseEntity.ok(loginResponse);
-    }
-
-    @PostMapping("/register")
-    public ResponseEntity<UserDto.Response> register(@Valid @RequestBody UserDto.RegisterRequest request) {
-        UserDto.Response registeredUser = userService.register(request);
-
-        return ResponseEntity.ok(registeredUser);
     }
 
     @GetMapping("/me")
@@ -56,10 +53,8 @@ public class AuthController {
             @RequestBody UserDto.ChangePasswordRequest request,
             @AuthenticationPrincipal User currentUser) {
 
-        UserDto.Response user = userService.changePassword(currentUser.getId(), request);
+        UserDto.Response user = authService.changePassword(currentUser.getId(), request);
 
         return ResponseEntity.ok(user);
     }
-
-
 }

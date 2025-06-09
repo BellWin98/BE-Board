@@ -38,7 +38,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
      * @param pageable 페이징 정보
      * @return 게시글 페이지
      */
-    @Query("SELECT p FROM Post p WHERE (p.title LIKE %:searchTerm% OR p.content LIKE %:searchTerm% OR p.author.username LIKE %:searchTerm%) AND p.deleted = false")
+    @Query("SELECT p FROM Post p WHERE (p.title LIKE %:searchTerm% OR p.content LIKE %:searchTerm% OR p.author.nickname LIKE %:searchTerm%) AND p.deleted = false")
     Page<Post> searchPosts(@Param("searchTerm") String searchTerm, Pageable pageable);
 
     /**
@@ -48,7 +48,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
      * @param pageable 페이징 정보
      * @return 게시글 페이지
      */
-    @Query("SELECT p FROM Post p WHERE p.category.id = :categoryId AND (p.title LIKE %:searchTerm% OR p.content LIKE %:searchTerm% OR p.author.username LIKE %:searchTerm%) AND p.deleted = false")
+    @Query("SELECT p FROM Post p WHERE p.category.id = :categoryId AND (p.title LIKE %:searchTerm% OR p.content LIKE %:searchTerm% OR p.author.nickname LIKE %:searchTerm%) AND p.deleted = false")
     Page<Post> searchPostsByCategory(@Param("categoryId") Long categoryId, @Param("searchTerm") String searchTerm, Pageable pageable);
 
     /**

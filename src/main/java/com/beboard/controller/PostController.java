@@ -43,7 +43,7 @@ public class PostController {
             @AuthenticationPrincipal User currentUser) {
 
         log.info("게시글 상세 조회 요청 - ID: {}, 사용자: {}",
-                id, currentUser != null ? currentUser.getUsername() : "anonymous");
+                id, currentUser != null ? currentUser.getNickname() : "anonymous");
         PostDto.DetailResponse post = postService.getPost(id, currentUser.getId());
 
         return ResponseEntity.ok(post);
@@ -56,7 +56,7 @@ public class PostController {
             @AuthenticationPrincipal User currentUser) {
 
         log.info("게시글 작성 요청 - 사용자: {}, 제목: {}",
-                currentUser.getUsername(), request.getTitle());
+                currentUser.getNickname(), request.getTitle());
         PostDto.DetailResponse post = postService.createPost(request, currentUser.getId());
 
         return ResponseEntity.ok(post);
@@ -69,7 +69,7 @@ public class PostController {
         @Valid @RequestBody PostDto.Request request,
         @AuthenticationPrincipal User currentUser) {
 
-        log.info("게시글 수정 요청 - ID: {}, 사용자: {}", id, currentUser.getUsername());
+        log.info("게시글 수정 요청 - ID: {}, 사용자: {}", id, currentUser.getNickname());
         PostDto.DetailResponse post = postService.updatePost(id, request, currentUser.getId());
 
         return ResponseEntity.ok(post);
@@ -80,7 +80,7 @@ public class PostController {
     public ResponseEntity<Void> deletePost(
             @PathVariable Long id,
             @AuthenticationPrincipal User currentUser) {
-        log.info("게시글 삭제 요청 - ID: {}, 사용자: {}", id, currentUser.getUsername());
+        log.info("게시글 삭제 요청 - ID: {}, 사용자: {}", id, currentUser.getNickname());
         postService.deletePost(id, currentUser.getId());
 
         return ResponseEntity.ok().build();
@@ -99,7 +99,7 @@ public class PostController {
             @PageableDefault(size = 20, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
             @RequestParam(required = false, defaultValue = "newest") String sort,
             @AuthenticationPrincipal User currentUser) {
-        log.info("내 게시글 목록 조회 요청 - 사용자: {}", currentUser.getUsername());
+        log.info("내 게시글 목록 조회 요청 - 사용자: {}", currentUser.getNickname());
         Page<PostDto.ListResponse> posts = postService.getPostsByAuthor(currentUser.getId(), sort, pageable);
 
         return ResponseEntity.ok(posts);
@@ -110,7 +110,7 @@ public class PostController {
     public ResponseEntity<Boolean> addBookmark(
             @PathVariable Long postId,
             @AuthenticationPrincipal User currentUser) {
-        log.info("게시글 북마크 추가 요청 - 게시글ID: {}, 사용자: {}", postId, currentUser.getUsername());
+        log.info("게시글 북마크 추가 요청 - 게시글ID: {}, 사용자: {}", postId, currentUser.getNickname());
 
         return ResponseEntity.ok(postService.addBookmark(postId, currentUser.getId()));
     }
@@ -120,7 +120,7 @@ public class PostController {
     public ResponseEntity<Boolean> removeBookmark(
             @PathVariable Long postId,
             @AuthenticationPrincipal User currentUser) {
-        log.info("게시글 북마크 제거 요청 - 게시글ID: {}, 사용자: {}", postId, currentUser.getUsername());
+        log.info("게시글 북마크 제거 요청 - 게시글ID: {}, 사용자: {}", postId, currentUser.getNickname());
 
         return ResponseEntity.ok(postService.removeBookmark(postId, currentUser.getId()));
     }
@@ -131,7 +131,7 @@ public class PostController {
             @PageableDefault(size = 20, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
             @RequestParam(required = false, defaultValue = "newest") String sort,
             @AuthenticationPrincipal User currentUser) {
-        log.info("북마크 게시글 목록 조회 요청 - 사용자: {}", currentUser.getUsername());
+        log.info("북마크 게시글 목록 조회 요청 - 사용자: {}", currentUser.getNickname());
         Page<PostDto.ListResponse> bookmarkedPosts = postService.getBookmarkedPosts(currentUser.getId(), sort, pageable);
 
         return ResponseEntity.ok(bookmarkedPosts);

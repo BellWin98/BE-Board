@@ -44,9 +44,9 @@ spring:
       cache-null-values: false
 # JWT 설정
 jwt:
-  secret: ${JWT_SECRET:pVQgJfFKqOz1lfzVOjiTNrGsL3bo8bvbYB51YJFQ56sY0iWYs2LaV65BeBDaed3a}
-  expiration: 86400000 # 24시간(ms)
-  refresh-expiration: 604800000 # 7일(ms)
+  secret: pVQgJfFKqOz1lfzVOjiTNrGsL3bo8bvbYB51YJFQ56sY0iWYs2LaV65BeBDaed3a
+  access-token-expiration: 86400000 # 24시간(ms)
+  refresh-token-expiration: 604800000 # 7일(ms)
 
 # 로깅 설정
 logging:
