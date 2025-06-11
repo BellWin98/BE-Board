@@ -1,7 +1,9 @@
 package com.beboard.controller;
 
+import com.beboard.dto.CommentDto;
 import com.beboard.dto.PostDto;
 import com.beboard.entity.User;
+import com.beboard.service.CommentService;
 import com.beboard.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 public class PostController {
 
     private final PostService postService;
+    private final CommentService commentService;
 
     @GetMapping
     public ResponseEntity<Page<PostDto.ListResponse>> getPosts(
@@ -42,9 +45,9 @@ public class PostController {
             @PathVariable Long id,
             @AuthenticationPrincipal User currentUser) {
 
-        log.info("게시글 상세 조회 요청 - ID: {}, 사용자: {}",
-                id, currentUser != null ? currentUser.getNickname() : "anonymous");
-        PostDto.DetailResponse post = postService.getPost(id, currentUser.getId());
+        log.info("게시글 상세 조회 요청 - ID: {}, 사용자: {}", id, currentUser != null ? currentUser.getNickname() : "anonymous");
+        Long userId = currentUser != null ? currentUser.getId() : null;
+        PostDto.DetailResponse post = postService.getPost(id, userId);
 
         return ResponseEntity.ok(post);
     }
@@ -83,14 +86,14 @@ public class PostController {
         log.info("게시글 삭제 요청 - ID: {}, 사용자: {}", id, currentUser.getNickname());
         postService.deletePost(id, currentUser.getId());
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{id}/views")
     public ResponseEntity<Void> incrementViews(@PathVariable Long id) {
         postService.incrementViews(id);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/me")
@@ -137,4 +140,14 @@ public class PostController {
         return ResponseEntity.ok(bookmarkedPosts);
     }
 
+    @GetMapping("/{postId}/comments")
+    public ResponseEntity<Page<CommentDto.Response>> getCommentsByPostId(
+            @PathVariable Long postId,
+            @PageableDefault(size = 20, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+
+        log.info("게시글 댓글 목록 조회 요청 - 게시글 ID: {}, 페이지: {}", postId, pageable.getPageNumber());
+        Page<CommentDto.Response> comments = commentService.getCommentsByPostId(postId, pageable);
+
+        return ResponseEntity.ok(comments);
+    }
 }
