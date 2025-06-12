@@ -40,7 +40,7 @@ public class Post extends BaseTimeEntity {
     private List<Comment> comments = new ArrayList<>();
 
     // 댓글 수를 계산하는 데이터베이스 수식 (성능 최적화)
-    @Formula("(SELECT COUNT(c.id) FROM comments c WHERE c.post_id = id)")
+    @Formula("(SELECT COUNT(c.id) FROM comments c WHERE c.post_id = id AND c.deleted = false)")
     private int commentCount;
 
     @Column(nullable = false)
