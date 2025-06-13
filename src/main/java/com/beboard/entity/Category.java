@@ -2,10 +2,7 @@ package com.beboard.entity;
 
 import com.beboard.util.BaseTimeEntity;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Getter
 @Entity
@@ -23,6 +20,7 @@ public class Category extends BaseTimeEntity {
     private String description;
 
     @Column(nullable = false)
+    @Setter
     private boolean active = true;
 
     @Column(nullable = false)
@@ -43,9 +41,5 @@ public class Category extends BaseTimeEntity {
         if (displayOrder != null) {
             this.displayOrder = displayOrder;
         }
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
     }
 }

@@ -43,5 +43,5 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
      * @return 카테고리별 게시글 수 목록 (Object[] 배열의 리스트로, [0]은 카테고리 ID, [1]은 게시글 수)
      */
     @Query("SELECT c.id, COUNT(p) FROM Category c LEFT JOIN Post p ON c.id = p.category.id AND p.deleted = false GROUP BY c.id")
-    List<Object[]> countPostsByCategories();
+    List<Long[]> countPostsByCategories();
 }
