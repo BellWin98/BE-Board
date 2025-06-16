@@ -18,6 +18,10 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
+
+      - name: Replace JASYPT_KEY in application.yaml
+        run: |
+          sed -i 's/\${JASYPT_KEY}/$/g' ./src/main/resources/application.yml
           
       - name: Gradle Caching
         uses: actions/cache@v3
@@ -33,7 +37,7 @@ jobs:
         run: chmod +x ./gradlew
         
       - name: Build With Gradle
-        run: ./gradlew clean build -x test --no-daemon -Pjasypt.encryptor.password=${{ secrets.JASYPT_KEY }}
+        run: ./gradlew clean build -x test --no-daemon
         
       - name: Docker build & Push to Docker Hub repo
         run: |
