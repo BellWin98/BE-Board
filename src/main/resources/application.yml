@@ -54,4 +54,4 @@ jasypt:
     pool-size: 2 # 암호화 요청을 담고 있는 pool의 크기
     string-output-type: base64 # 암호화 이후에 어떤 형태로 값을 받을지 설정
     key-obtention-iterations: 1000 # 암호화 키를 얻기 위해 반복해야 하는 해시 횟수
-    password: ${JASYPT_KEY} # 환경변수 설정
+    password: ${JASYPT_ENCRYPTOR_PASSWORD} # 환경변수 설정
