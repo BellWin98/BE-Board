@@ -56,8 +56,8 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           envs: DOCKER_COMPOSE_PATH, JASYPT_ENCRYPTOR_PASSWORD
           script: |
-            sudo docker stop board
-            sudo docker rm -f $(sudo docker ps --filter 'status=exited' -a -q)
+            sudo docker stop board || true
+            sudo docker rm -f $(sudo docker ps --filter 'status=exited' -a -q) || true
             sudo docker pull ${{ secrets.DOCKER_REPO }}/board
             sudo docker rmi $(docker images -f "dangling=true" -q)
             export JASYPT_ENCRYPTOR_PASSWORD=$JASYPT_ENCRYPTOR_PASSWORD
