@@ -61,4 +61,4 @@ jobs:
             sudo docker pull ${{ secrets.DOCKER_REPO }}/board
             sudo docker rmi $(docker images -f "dangling=true" -q)
             export JASYPT_KEY=$JASYPT_KEY
-            sudo docker compose up -f $DOCKER_COMPOSE_PATH up -d
+            sudo docker compose up -f $DOCKER_COMPOSE_PATH -d
