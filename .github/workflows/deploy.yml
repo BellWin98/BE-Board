@@ -41,16 +41,13 @@ jobs:
       - name: Clean And Test With Gradle
         run: ./gradlew clean -x test --no-daemon
 
-      - name: Login to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Docker build & Push to Docker Hub repo
+        run: |
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          docker build -t ${{ secrets.DOCKER_REPO }}/board:latest .
+          docker push ${{ secrets.DOCKER_REPO }}/board:latest
 
-      - name: Docker Image Build And Push
-        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}-board:${{ github.sha }} . --push
-
-      - name: Deploy to dev EC2
+      - name: Deploy to EC2
         uses: appleboy/ssh-action@master
         id: deploy-prod
         with:
@@ -59,8 +56,9 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           envs: DOCKER_COMPOSE_PATH, JASYPT_KEY
           script: |
-            sudo docker compose down || true
-            sudo docker rmi $(docker images -q) -f || true
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}-board
+            sudo docker stop board
+            sudo docker rm -f $(sudo docker ps --filter 'status=exited' -a -q)
+            sudo docker pull ${{ secrets.DOCKER_REPO }}/board
+            sudo docker rmi $(docker images -f "dangling=true" -q)
             export JASYPT_KEY=$JASYPT_KEY
             sudo docker compose up -f $DOCKER_COMPOSE_PATH up -d
