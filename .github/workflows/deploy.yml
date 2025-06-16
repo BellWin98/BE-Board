@@ -33,7 +33,7 @@ jobs:
         run: chmod +x ./gradlew
         
       - name: Build With Gradle
-        run: ./gradlew clean build -x test --no-daemon -Pjasypt.encryptor.password=${{secrets.JASYPT_KEY}}
+        run: ./gradlew clean build -x test --no-daemon -Pjasypt.encryptor.password=${{ secrets.JASYPT_KEY }}
         
       - name: Docker build & Push to Docker Hub repo
         run: |
