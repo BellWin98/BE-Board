@@ -2,7 +2,7 @@ name: prod-ci
 on:
   push:
     branches:
-      - prod
+      - main
   pull_request:
     branches:
       - main
