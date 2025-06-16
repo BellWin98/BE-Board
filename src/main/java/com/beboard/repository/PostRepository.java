@@ -9,11 +9,12 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
+
+    Page<Post> findByDeletedFalse(Pageable pageable);
 
     /**
      * 게시글 ID로 조회 (삭제되지 않은 게시글만)
@@ -92,5 +93,5 @@ public interface PostRepository extends JpaRepository<Post, Long> {
      * @return 인기 게시글 목록
      */
     @Query("SELECT p FROM Post p WHERE p.deleted = false ORDER BY p.viewCount DESC, p.createdAt DESC")
-    List<Post> findPopularPosts(Pageable pageable);
+    Page<Post> findPopularPosts(Pageable pageable);
 }

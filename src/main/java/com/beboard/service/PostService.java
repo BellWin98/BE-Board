@@ -17,9 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -56,7 +54,7 @@ public class PostService {
             postsPage = postRepository.searchPosts(search, optimizedPageable);
         } else {
             // 필터 없음
-            postsPage = postRepository.findAll(optimizedPageable);
+            postsPage = postRepository.findByDeletedFalse(optimizedPageable);
         }
 
         return postsPage.map(PostDto.ListResponse::from);
@@ -292,13 +290,11 @@ public class PostService {
      * @param limit 조회할 게시글 수
      * @return 인기 게시글 목록
      */
-    public List<PostDto.ListResponse> getPopularPosts(int limit) {
+    public Page<PostDto.ListResponse> getPopularPosts(int limit) {
         PageRequest pageRequest = PageRequest.of(0, limit, Sort.by(Sort.Direction.DESC, "views"));
-        List<Post> popularPosts = postRepository.findPopularPosts(pageRequest);
+        Page<Post> popularPosts = postRepository.findPopularPosts(pageRequest);
 
-        return popularPosts.stream()
-                .map(PostDto.ListResponse::from)
-                .collect(Collectors.toList());
+        return popularPosts.map(PostDto.ListResponse::from);
     }
 
     /**
