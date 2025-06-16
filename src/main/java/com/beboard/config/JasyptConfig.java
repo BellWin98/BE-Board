@@ -1,12 +1,15 @@
 package com.beboard.config;
 
+import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties;
 import org.jasypt.encryption.StringEncryptor;
 import org.jasypt.encryption.pbe.PooledPBEStringEncryptor;
 import org.jasypt.encryption.pbe.config.SimpleStringPBEConfig;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
+@Profile({"local", "prod"})
 @Configuration
 public class JasyptConfig {
 
@@ -28,6 +31,8 @@ public class JasyptConfig {
         config.setPassword(key); // 암호화 키
         config.setAlgorithm(algorithm); // 암호화 알고리즘
         // config.setIvGenerator(new RandomIvGenerator()); // PBE-AES 기반 알고리즘의 경우 IV 생성 필수
+        config.setProviderName("SunJCE");
+        config.setIvGeneratorClassName("org.jasypt.iv.NoIvGenerator");
         config.setKeyObtentionIterations(hashing); // 반복할 해싱 회수
         config.setPoolSize(poolSize); // 인스턴스 pool
         config.setSaltGeneratorClassName("org.jasypt.salt.RandomSaltGenerator"); // salt 생성 클래스
