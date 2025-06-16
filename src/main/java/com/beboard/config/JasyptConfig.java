@@ -1,6 +1,7 @@
 package com.beboard.config;
 
 import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties;
+import lombok.extern.slf4j.Slf4j;
 import org.jasypt.encryption.StringEncryptor;
 import org.jasypt.encryption.pbe.PooledPBEStringEncryptor;
 import org.jasypt.encryption.pbe.config.SimpleStringPBEConfig;
@@ -11,6 +12,7 @@ import org.springframework.context.annotation.Profile;
 
 @Profile({"local", "prod"})
 @Configuration
+@Slf4j
 public class JasyptConfig {
 
     @Value("${jasypt.encryptor.password}")
@@ -26,6 +28,7 @@ public class JasyptConfig {
 
     @Bean(name = "jasyptStringEncryptor")
     public StringEncryptor stringEncryptor() {
+        log.info("Jasypt 시크릿 키: {}", key);
         PooledPBEStringEncryptor encryptor = new PooledPBEStringEncryptor();
         SimpleStringPBEConfig config = new SimpleStringPBEConfig();
         config.setPassword(key); // 암호화 키
