@@ -11,7 +11,8 @@ server:
 
 spring:
   profiles:
-    active: local
+    active: prod
+    include: secret
   servlet:
     multipart:
       max-file-size: 20MB
@@ -30,23 +31,12 @@ spring:
     baseline-on-migrate: true
     locations: classpath:db/migration
 
-  data:
-    redis:
-      host: localhost
-      port: 6379
-      timeout: 10s
-      password: pinup2025@
   # 캐시 설정
   cache:
     type: redis
     redis:
       time-to-live: 3600000 # 1시간
       cache-null-values: false
-# JWT 설정
-jwt:
-  secret: pVQgJfFKqOz1lfzVOjiTNrGsL3bo8bvbYB51YJFQ56sY0iWYs2LaV65BeBDaed3a
-  access-token-expiration: 86400000 # 24시간(ms)
-  refresh-token-expiration: 604800000 # 7일(ms)
 
 # 로깅 설정
 logging:
@@ -57,3 +47,11 @@ logging:
     org.springframework.security: INFO
     org.hibernate.SQL: DEBUG
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+
+jasypt:
+  encryptor:
+    algorithm: PBEWithMD5AndDES # 사용되는 알고리즘
+    pool-size: 2 # 암호화 요청을 담고 있는 pool의 크기
+    string-output-type: base64 # 암호화 이후에 어떤 형태로 값을 받을지 설정
+    key-obtention-iterations: 1000 # 암호화 키를 얻기 위해 반복해야 하는 해시 횟수
+    password: ${JASYPT_KEY} # 환경변수 설정
