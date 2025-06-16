@@ -1,0 +1,58 @@
+name: Deploy to EC2
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          
+      - name: Gradle Caching
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+          
+      - name: Grant Execute Permission For Gradlew
+        run: chmod +x ./gradlew
+        
+      - name: Build With Gradle
+        run: ./gradlew clean build -x test --no-daemon -Pjasypt.encryptor.password=${{secrets.JASYPT_KEY}}
+        
+      - name: Docker build & Push to Docker Hub repo
+        run: |
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          docker build -t ${{ secrets.DOCKER_REPO }}/board:latest .
+          docker push ${{ secrets.DOCKER_REPO }}/board:latest
+
+      - name: Deploy
+        uses: appleboy/ssh-action@master
+        env:
+          COMPOSE: "/home/ubuntu/docker-compose.yml"
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          envs: COMPOSE
+          script: |
+            sudo docker stop board
+            sudo docker rm -f $(sudo docker ps --filter 'status=exited' -a -q)
+            sudo docker pull ${{ secrets.DOCKER_REPO }}/board
+            sudo docker rmi $(docker images -f "dangling=true" -q)
+            sudo docker-compose -f $COMPOSE up -d            
