@@ -28,12 +28,10 @@ public class JasyptConfig {
 
     @Bean(name = "jasyptStringEncryptor")
     public StringEncryptor stringEncryptor() {
-        log.info("Jasypt 시크릿 키: {}", key);
         PooledPBEStringEncryptor encryptor = new PooledPBEStringEncryptor();
         SimpleStringPBEConfig config = new SimpleStringPBEConfig();
         config.setPassword(key); // 암호화 키
         config.setAlgorithm(algorithm); // 암호화 알고리즘
-        // config.setIvGenerator(new RandomIvGenerator()); // PBE-AES 기반 알고리즘의 경우 IV 생성 필수
         config.setProviderName("SunJCE");
         config.setIvGeneratorClassName("org.jasypt.iv.NoIvGenerator");
         config.setKeyObtentionIterations(hashing); // 반복할 해싱 회수
