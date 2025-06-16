@@ -39,7 +39,7 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Clean And Test With Gradle
-        run: ./gradlew clean -x test --no-daemon
+        run: ./gradlew clean build -x test --no-daemon
 
       - name: Docker build & Push to Docker Hub repo
         run: |
