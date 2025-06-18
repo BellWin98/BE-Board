@@ -12,6 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.*;
 
@@ -45,6 +46,9 @@ class CategoryServiceTest {
                 .description("자유롭게 소통하는 공간")
                 .displayOrder(1)
                 .build();
+
+        // 리플렉션으로 id 설정
+        ReflectionTestUtils.setField(testCategory, "id", 1L);
 
         // 테스트용 생성 요청
         createRequest = new CategoryDto.CreateRequest();
@@ -83,6 +87,7 @@ class CategoryServiceTest {
     @Test
     @DisplayName("카테고리 상세 조회 성공")
     void getCategoryById_Success() {
+
         // given
         Long categoryId = 1L;
         given(categoryRepository.findById(categoryId))
@@ -105,6 +110,7 @@ class CategoryServiceTest {
     @Test
     @DisplayName("존재하지 않는 카테고리 조회 시 예외 발생")
     void getCategoryById_NotFound() {
+
         // given
         Long categoryId = 999L;
         given(categoryRepository.findById(categoryId))
@@ -113,20 +119,19 @@ class CategoryServiceTest {
         // when & then
         assertThatThrownBy(() -> categoryService.getCategoryById(categoryId))
                 .isInstanceOf(NoSuchElementException.class)
-                .hasMessageContaining("카테고리를 찾을 수 없습니다");
+                .hasMessageContaining("카테고리를 찾을 수 없습니다. ID: " + categoryId);
 
         verify(categoryRepository).findById(categoryId);
-        verify(categoryRepository, never()).countPostsByCategoryId(any());
+        verify(categoryRepository, never()).countPostsByCategoryId(categoryId);
     }
 
     @Test
     @DisplayName("카테고리 생성 성공")
     void createCategory_Success() {
+
         // given
         given(categoryRepository.existsByName(createRequest.getName()))
                 .willReturn(false);
-        given(categoryRepository.findAll())
-                .willReturn(Arrays.asList(testCategory));
         given(categoryRepository.save(any(Category.class)))
                 .willReturn(testCategory);
 
@@ -139,6 +144,7 @@ class CategoryServiceTest {
 
         verify(categoryRepository).existsByName(createRequest.getName());
         verify(categoryRepository).save(any(Category.class));
+
     }
 
     @Test
