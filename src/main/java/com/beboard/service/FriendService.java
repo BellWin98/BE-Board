@@ -41,7 +41,7 @@ public class FriendService {
     @Transactional
     public FriendDto.Response sendFriendRequest(FriendDto.SendRequest request, User requester) {
         // 요청 받을 사용자 조회
-        User addressee = userRepository.findByEmail(request.getEmail())
+        User addressee = userRepository.findByEmailAndDeletedFalse(request.getEmail())
                 .orElseThrow(() -> new NoSuchElementException("사용자를 찾을 수 없습니다. 이메일: " + request.getEmail()));
 
         // 자기 자신에게 요청할 수 없음

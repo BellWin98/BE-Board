@@ -82,6 +82,7 @@ public class SecurityConfig {
                                 "/api/posts/{id}",             // 게시글 상세 조회
                                 "/api/posts/{postId}/comments", // 댓글 목록 조회
                                 "/api/comments/search",         // 댓글 검색
+                                "/api/challenges",
                                 "/error",                       // 에러 페이지
                                 "/actuator/health"              // 헬스 체크
                         ).permitAll()
