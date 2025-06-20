@@ -168,12 +168,13 @@ public class User extends BaseTimeEntity implements UserDetails {
      */
     public void softDelete() {
         this.deleted = true;
+        this.active = false;
         this.deletedAt = LocalDateTime.now();
         this.status = UserStatus.DELETED;
 
         // 개인정보 마스킹 (필요에 따라)
-        this.email = "deleted_" + this.id + "@example.com";
-        this.nickname = "deleted_user_" + this.id;
+//        this.email = "deleted_" + this.id + "@example.com";
+//        this.nickname = "deleted_user_" + this.id;
     }
 
     /**

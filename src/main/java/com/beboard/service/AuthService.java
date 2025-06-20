@@ -128,7 +128,7 @@ public class AuthService {
         }
 
         // 비밀번호 암호화 및 업데이트
-        String encodedPassword = passwordEncoder.encode(requestDto.getCurrentPassword());
+        String encodedPassword = passwordEncoder.encode(requestDto.getNewPassword());
         user.updatePassword(encodedPassword);
 
         User updatedUser = userRepository.save(user);
@@ -137,15 +137,29 @@ public class AuthService {
         return UserDto.Response.from(updatedUser);
     }
 
+    // 회원 탈퇴
+    @Transactional
+    public void deleteAccount(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NoSuchElementException("사용자를 찾을 수 없습니다. ID: " + userId));
+
+        user.softDelete();
+        userRepository.save(user);
+
+        // 현재 세션 무효화
+        SecurityContextHolder.clearContext();
+
+        log.info("사용자 계정 삭제 완료: {}", user.getEmail());
+    }
+
     // 로그아웃
     @Transactional
     public void signOut(String userEmail) {
-        User user = userRepository.findByEmail(userEmail)
+        User user = userRepository.findByEmailAndDeletedFalse(userEmail)
                 .orElseThrow();
 
 //        user.removeRefreshToken();
         userRepository.save(user);
-
         SecurityContextHolder.clearContext();
     }
 }

@@ -57,4 +57,11 @@ public class AuthController {
 
         return ResponseEntity.ok(user);
     }
+
+    @DeleteMapping("/account")
+    public ResponseEntity<Void> deleteAccount(@AuthenticationPrincipal User currentUser) {
+        authService.deleteAccount(currentUser.getId());
+
+        return ResponseEntity.noContent().build();
+    }
 }

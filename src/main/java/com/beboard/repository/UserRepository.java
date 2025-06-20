@@ -20,6 +20,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * @return 사용자 Optional
      */
     Optional<User> findByEmail(String email);
+    Optional<User> findByEmailAndDeletedFalse(String email);
 
     /**
      * 사용자명으로 사용자 조회

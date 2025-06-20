@@ -144,12 +144,12 @@ class CategoryServiceTest {
 
         verify(categoryRepository).existsByName(createRequest.getName());
         verify(categoryRepository).save(any(Category.class));
-
     }
 
     @Test
     @DisplayName("중복 이름으로 카테고리 생성 시 예외 발생")
     void createCategory_DuplicateName() {
+
         // given
         given(categoryRepository.existsByName(createRequest.getName()))
                 .willReturn(true);
@@ -157,7 +157,7 @@ class CategoryServiceTest {
         // when & then
         assertThatThrownBy(() -> categoryService.createCategory(createRequest))
                 .isInstanceOf(AlreadyExistsException.class)
-                .hasMessageContaining("이미 존재하는 카테고리입니다");
+                .hasMessageContaining("이미 존재하는 카테고리입니다.");
 
         verify(categoryRepository).existsByName(createRequest.getName());
         verify(categoryRepository, never()).save(any());
@@ -166,6 +166,7 @@ class CategoryServiceTest {
     @Test
     @DisplayName("카테고리 수정 성공")
     void updateCategory_Success() {
+
         // given
         Long categoryId = 1L;
         given(categoryRepository.findById(categoryId))
@@ -181,7 +182,7 @@ class CategoryServiceTest {
         CategoryDto.Response result = categoryService.updateCategory(categoryId, updateRequest);
 
         // then
-        assertThat(result.getId()).isEqualTo(1L);
+        assertThat(result.getName()).isEqualTo(updateRequest.getName());
         assertThat(result.getPostCount()).isEqualTo(3L);
 
         verify(categoryRepository).findById(categoryId);
