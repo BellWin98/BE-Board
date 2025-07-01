@@ -11,7 +11,7 @@ server:
 
 spring:
   profiles:
-    active: prod
+    active: local
     include: secret
   servlet:
     multipart:
@@ -47,6 +47,7 @@ logging:
     org.springframework.security: INFO
     org.hibernate.SQL: DEBUG
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    org.springframework.data.redis: DEBUG
 
 jasypt:
   encryptor:
