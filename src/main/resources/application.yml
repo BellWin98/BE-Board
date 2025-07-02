@@ -51,6 +51,6 @@ notification:
   redis:
     channel: "comment-notification"
   websocket:
-    endpoint: "/ws"
+    endpoint: "/wss"
     topic: "/topic/notifications"
     user-destination-prefix: "/user"

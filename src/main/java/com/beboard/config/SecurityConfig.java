@@ -84,6 +84,7 @@ public class SecurityConfig {
                                 "/api/comments/search",         // 댓글 검색
                                 "/api/notifications",
                                 "/ws/**",
+                                "/wss/**",
                                 "/error",                       // 에러 페이지
                                 "/actuator/health"              // 헬스 체크
                         ).permitAll()
