@@ -1,13 +1,12 @@
 package com.beboard.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter
+@Builder
 public class NotificationMessage {
+    private Long recipientId; // 알림을 받을 사용자의 ID
     private String content; // 알림 내용
-    private String type;    // 알림 타입 (예: ORDER, CHAT)
+    private String url;     // 클릭 시 이동할 URL
+    private String type;    // 알림 타입
 }

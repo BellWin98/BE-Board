@@ -1,6 +1,7 @@
 package com.beboard.service;
 
 import com.beboard.dto.CommentDto;
+import com.beboard.dto.NotificationMessage;
 import com.beboard.entity.Comment;
 import com.beboard.entity.Post;
 import com.beboard.entity.User;
@@ -13,7 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +28,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final NotificationPublisher notificationPublisher;
 
     public Page<CommentDto.Response> getCommentsByPostId(Long postId, Pageable pageable) {
         if (!postRepository.existsById(postId)) {
@@ -39,7 +40,7 @@ public class CommentService {
     }
 
     @Transactional
-    public CommentDto.Response createComment(CommentDto.CreateRequest request, User author) {
+    public CommentDto.Response createComment(CommentDto.CreateRequest request, User commenter) {
         Post post = postRepository.findByIdAndNotDeleted(request.getPostId())
                 .orElseThrow(() -> new NoSuchElementException("게시글을 찾을 수 없습니다. ID: " + request.getPostId()));
         Comment parent = null;
@@ -55,18 +56,34 @@ public class CommentService {
         Comment createdComment = Comment.builder()
                 .content(request.getContent())
                 .parent(parent)
-                .author(author)
+                .commenter(commenter)
                 .post(post)
                 .build();
         Comment savedComment = commentRepository.save(createdComment);
         log.info("댓글 작성 완료 - ID: {}, 작성자: {}, 게시글: {}",
-                savedComment.getId(), author.getNickname(), post.getId());
+                savedComment.getId(), commenter.getNickname(), post.getId());
+        
+        // 댓글 작성자와 게시글 작성자가 다른 경우에만 알림 전송
+        if (!post.isAuthor(commenter.getId())) {
+            String notificationContent = String.format("'%s'님이 회원님의 게시글에 댓글을 남겼습니다.", commenter.getNickname());
+            String notificationUrl = "/posts/" + post.getId();
+
+            NotificationMessage notificationMessage = NotificationMessage.builder()
+                    .recipientId(post.getAuthor().getId()) // 게시글 작성자 ID
+                    .content(notificationContent)
+                    .url(notificationUrl)
+                    .type("NEW_COMMENT")
+                    .build();
+
+            notificationPublisher.sendNotification(notificationMessage);
+            log.info("새 댓글 알림 발송 -> 받는이: {}, 게시글 ID: {}", post.getAuthor().getNickname(), post.getId());
+        }
 
         return CommentDto.Response.from(savedComment);
     }
 
     public Page<CommentDto.Response> getMyComments(Pageable pageable, Long userId) {
-        Page<Comment> myComments = commentRepository.findByAuthorIdAndNotDeleted(userId, pageable);
+        Page<Comment> myComments = commentRepository.findByCommenterIdAndNotDeleted(userId, pageable);
 
         return myComments.map(CommentDto.Response::from);
     }

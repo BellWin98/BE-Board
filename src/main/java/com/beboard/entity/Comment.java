@@ -11,7 +11,7 @@ import java.util.List;
 @Table(name = "comments")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@ToString(exclude = {"post", "author", "parent", "children"})
+@ToString(exclude = {"post", "commenter", "parent", "children"})
 public class Comment extends BaseTimeEntity {
 
     @Id
@@ -26,8 +26,8 @@ public class Comment extends BaseTimeEntity {
     private Post post;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "author_id", nullable = false)
-    private User author;
+    @JoinColumn(name = "commenter_id", nullable = false)
+    private User commenter;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
@@ -43,14 +43,14 @@ public class Comment extends BaseTimeEntity {
      * 댓글 생성자
      * @param content 댓글 내용
      * @param post 댓글이 속한 게시글
-     * @param author 댓글 작성자
+     * @param commenter 댓글 작성자
      * @param parent 부모 댓글 (답글인 경우)
      */
     @Builder
-    public Comment(String content, Post post, User author, Comment parent) {
+    public Comment(String content, Post post, User commenter, Comment parent) {
         this.content = content;
         this.post = post;
-        this.author = author;
+        this.commenter = commenter;
         this.parent = parent;
 
         // 부모 댓글이 있는 경우 자식 댓글로 추가
@@ -122,7 +122,7 @@ public class Comment extends BaseTimeEntity {
      * @return 작성자 여부
      */
     public boolean isAuthor(Long userId) {
-        return this.author.getId().equals(userId);
+        return this.commenter.getId().equals(userId);
     }
 }
 

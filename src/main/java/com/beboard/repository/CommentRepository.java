@@ -32,12 +32,12 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     /**
      * 사용자가 작성한 댓글 목록 조회
-     * @param authorId 작성자 ID
+     * @param commenterId 작성자 ID
      * @param pageable 페이징 정보
      * @return 댓글 페이지
      */
-    @Query("SELECT c FROM Comment c WHERE c.author.id = :authorId AND c.deleted = false ORDER BY c.createdAt DESC")
-    Page<Comment> findByAuthorIdAndNotDeleted(@Param("authorId") Long authorId, Pageable pageable);
+    @Query("SELECT c FROM Comment c WHERE c.commenter.id = :commenterId AND c.deleted = false ORDER BY c.createdAt DESC")
+    Page<Comment> findByCommenterIdAndNotDeleted(@Param("commenterId") Long commenterId, Pageable pageable);
 
     /**
      * 특정 게시글의 댓글 수 조회

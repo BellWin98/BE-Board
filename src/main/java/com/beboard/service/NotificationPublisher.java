@@ -19,7 +19,8 @@ public class NotificationPublisher {
     public void sendNotification(NotificationMessage message) {
         // 지정된 채널(토픽)로 메시지 발행
         // RedisConfig 에서 설정한 직렬화 방식(Jackson2JsonRedisSerializer)에 따라 메시지가 JSON 문자열로 변환되어 저장됨
-        redisTemplate.convertAndSend(channelTopic.getTopic(), message);
+        String topic = channelTopic.getTopic();
+        redisTemplate.convertAndSend(topic, message);
     }
 }
 

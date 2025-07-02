@@ -11,7 +11,7 @@ server:
 
 spring:
   profiles:
-    active: local
+    active: prod
     include: secret
   servlet:
     multipart:
@@ -38,17 +38,6 @@ spring:
       time-to-live: 3600000 # 1시간
       cache-null-values: false
 
-# 로깅 설정
-logging:
-  level:
-    root: INFO
-    com.beboard: DEBUG
-    org.springframework.web: INFO
-    org.springframework.security: INFO
-    org.hibernate.SQL: DEBUG
-    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
-    org.springframework.data.redis: DEBUG
-
 jasypt:
   encryptor:
     algorithm: PBEWithMD5AndDES # 사용되는 알고리즘
@@ -56,3 +45,11 @@ jasypt:
     string-output-type: base64 # 암호화 이후에 어떤 형태로 값을 받을지 설정
     key-obtention-iterations: 1000 # 암호화 키를 얻기 위해 반복해야 하는 해시 횟수
     password: ${JASYPT_ENCRYPTOR_PASSWORD} # 환경변수 설정
+
+notification:
+  redis:
+    channel: "comment-notification"
+  websocket:
+    endpoint: "/ws"
+    topic: "/topic/notifications"
+    user-destination-prefix: "/user"

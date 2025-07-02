@@ -37,6 +37,9 @@ public class RedisConfig {
     @Value("${spring.data.redis.port}")
     private int redisPort;
 
+    @Value("${notification.redis.channel}")
+    private String notificationChannel;
+
 /*    @Value("${spring.data.redis.password}")
     private String redisPassword;*/
 
@@ -99,6 +102,6 @@ public class RedisConfig {
     // 여기서는 "notifications" 라는 이름의 채널을 사용
     @Bean
     public ChannelTopic channelTopic() {
-        return new ChannelTopic("notifications");
+        return new ChannelTopic(notificationChannel);
     }
 }
