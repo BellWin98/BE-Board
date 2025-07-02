@@ -8,6 +8,7 @@ server:
   error:
     whitelabel:
       enabled: false
+  forward-headers-strategy: native
 
 spring:
   profiles:
