@@ -10,15 +10,19 @@ spring:
   jpa:
     properties:
       hibernate:
-        format_sql: true # 콘솔창에 출력되는 SQL문을 사람이 보기 편한 형태로 출력
-        default_batch_fetch_size: 500 # 1:N 컬렉션 조회 시 성능 최적화
-        highlight_sql: true
+        format_sql: false # 콘솔창에 출력되는 SQL문을 사람이 보기 편한 형태로 출력
+        highlight_sql: false
     hibernate:
       ddl-auto: update
-    show-sql: true
+    show-sql: false
   data:
     redis:
       host: ENC(+mNfUF8iXbnTe2oQ58Z2WA==)
       port: 6379
-      timeout: 10s
       password: ENC(KnkqTTSRRexaS5ibCJb8ecv8MC/mQF9a)
+
+# 로깅 설정
+logging:
+  level:
+    root: WARN
+    com.beboard: INFO
